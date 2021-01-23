@@ -7,7 +7,9 @@ import routes from './routes/index'
 import mongoose from 'mongoose';
 import userRoutes from './routes/usersRoutes'
 import cors from 'cors';
+import dotenv from 'dotenv'
 
+dotenv.config()
 const app = express();
 
 app.use(cors())
@@ -20,9 +22,13 @@ app.use(cookieParser());
 app.use('/', routes);
 app.use('/users', userRoutes)
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
+const dbName = process.env.DB_NAME;
+const dbHost = process.env.DB_HOST;
+const dbPort = process.env.DB_PORT;
 
-mongoose.connect('mongodb://localhost:27017/chat', { useNewUrlParser: true, useUnifiedTopology: true })
+
+mongoose.connect(`mongodb://${dbHost}:${dbPort}/${dbName}`, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Database is connected') ,
         err => console.log('Can not connect to the database'+ err)
     );
