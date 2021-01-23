@@ -3,14 +3,15 @@ import { generateHash } from "../utils/helpers";
 import validateRegisterUser from "../validation/registerUserValidation";
 
 export const registerUser = async (request, response) => {
-    const { email, password, first_name, last_name } = request.body;
+    const { email, password, firstName, lastName } = request.body.payload;
+
     try {
         const user = await User.findOne({ email: email })
         if(user) {
             return response.status(400).json({error: "This email already exits"});
         }
 
-        const validation = validateRegisterUser(request.body)
+        const validation = validateRegisterUser(request.body.payload)
         if(validation.error) {
             return response.status(400).json(validation.error);
         }
@@ -18,8 +19,8 @@ export const registerUser = async (request, response) => {
         const newUser = new User({
             email,
             password: await generateHash(password),
-            first_name,
-            last_name
+            first_name: firstName,
+            last_name: lastName
         });
 
         await newUser.save();

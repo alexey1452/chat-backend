@@ -6,9 +6,11 @@ import bodyParser from 'body-parser'
 import routes from './routes/index'
 import mongoose from 'mongoose';
 import userRoutes from './routes/usersRoutes'
+import cors from 'cors';
 
 const app = express();
 
+app.use(cors())
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
