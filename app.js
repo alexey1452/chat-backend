@@ -8,9 +8,14 @@ import mongoose from 'mongoose';
 import userRoutes from './routes/usersRoutes'
 import cors from 'cors';
 import dotenv from 'dotenv'
+import passport from 'passport';
+import { Server } from "socket.io";
 
 dotenv.config()
 const app = express();
+
+app.use(passport.initialize());
+require('./passport')(passport);
 
 app.use(cors())
 app.use(favicon());
@@ -33,8 +38,10 @@ mongoose.connect(`mongodb://${dbHost}:${dbPort}/${dbName}`, { useNewUrlParser: t
         err => console.log('Can not connect to the database'+ err)
     );
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server running on port http://localhost:${port}`)
 });
+
+const io = new Server(server);
 
 export default app;
