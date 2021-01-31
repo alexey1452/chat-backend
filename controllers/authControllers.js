@@ -21,9 +21,9 @@ export const registerUser = async (request, response) => {
 
         const newUser = new User({
             email,
+            firstName,
+            lastName,
             password: await generateHash(password),
-            first_name: firstName,
-            last_name: lastName
         });
 
         await newUser.save();
@@ -66,8 +66,9 @@ export const login = (request, response) => {
                                 console.error('There is some error in token', err);
                             } else {
                                 response.json({
+                                    user,
                                     success: true,
-                                    token: `${token}`
+                                    token: `${token}`,
                                 });
                             }
                         });
