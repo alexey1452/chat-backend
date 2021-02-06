@@ -1,9 +1,9 @@
 import express from 'express';
-import { registerUser, login } from '../controllers/authControllers'
+import {getUser} from "../controllers/userContollers";
+import {authenticateJWT} from "../utils/helpers";
 
 const router = express.Router();
 
-router.route('/register').post(registerUser);
-router.route('/login').post(login);
+router.route('/im').get(authenticateJWT, getUser);
 
 export default router;
