@@ -5,11 +5,13 @@ import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 import routes from './routes/index'
 import mongoose from 'mongoose';
-import userRoutes from './routes/usersRoutes'
+import authRoutes from './routes/authRoutes'
+import usersRoutes from './routes/usersRoutes'
 import cors from 'cors';
 import dotenv from 'dotenv'
-import passport from 'passport';
 import { Server } from "socket.io";
+import groupRoutes from "./routes/groupRoutes";
+import passport from 'passport';
 
 dotenv.config()
 const app = express();
@@ -25,7 +27,9 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 
 app.use('/', routes);
-app.use('/users', userRoutes)
+app.use('/auth', authRoutes)
+app.use('/groups', groupRoutes)
+app.use('/users',  usersRoutes)
 
 const port = process.env.PORT;
 const dbName = process.env.DB_NAME;

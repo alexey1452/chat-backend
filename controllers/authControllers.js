@@ -34,48 +34,38 @@ export const registerUser = async (request, response) => {
 
 };
 
-
-export const login = (request, response) => {
+export const login = async (request, response) => {
     const validation = validateLogin(request.body.payload);
+    const { email, password } = request.body.payload;
+    const user = await User.findOne({email});
 
     if(validation.error) {
         return response.status(400).json(validation.error);
     }
 
-    const email = request.body.payload.email;
-    const password = request.body.payload.password;
+    if(!user) {
+        return response.status(404).json({ email: 'User not found' });
+    }
 
-    User.findOne({email})
-        .then(user => {
-            if(!user) {
-                errors.email = 'User not found';
-                return response.status(404).json(errors);
-            }
-
-            bcrypt.compare(password, user.password)
-                .then(isMatch => {
-                    if(isMatch) {
-                        const payload = {
-                            id: user.id,
-                            name: user.name,
-                        };
-                        jwt.sign(payload, 'secret', {
-                            expiresIn: 3600
-                        }, (err, token) => {
-                            if(err) {
-                                console.error('There is some error in token', err);
-                            } else {
-                                response.json({
-                                    user,
-                                    success: true,
-                                    token: `${token}`,
-                                });
-                            }
-                        });
-                    } else {
-                        errors.password = 'Incorrect Password';
-                        return response.status(400).json(errors);
-                    }
-                });
-        });
+    bcrypt.compare(password, user.password).then(isMatch => {
+        if(isMatch) {
+            const payload = {
+                id: user._id,
+                email: user.email,
+            };
+            jwt.sign(payload, 'secret', { expiresIn: 3600 }, (err, token) => {
+                if(err) {
+                    console.error('There is some error in token', err);
+                } else {
+                    response.json({
+                        user,
+                        success: true,
+                        token: token,
+                    });
+                }
+            });
+        } else {
+            return response.status(400).json({ password: 'Incorrect Password' });
+        }
+    });
 };

@@ -24,16 +24,4 @@ const User = new Schema({
     timestamps: true
 });
 
-User.set('toJSON', {
-    transform: function(doc, ret, options) {
-        const json = {
-            firstName: ret.firstName,
-            lastName: ret.lastName,
-            email: ret.email,
-            createdAt: ret.createdAt
-        };
-        return json;
-    }
-});
-
 export default mongoose.model('user', User);
