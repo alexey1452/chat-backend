@@ -53,7 +53,7 @@ export const login = async (request, response) => {
                 id: user._id,
                 email: user.email,
             };
-            jwt.sign(payload, 'secret', { expiresIn: 3600 }, (err, token) => {
+            jwt.sign(payload, 'secret', { expiresIn: 60 * 60 * 24}, (err, token) => {
                 if(err) {
                     console.error('There is some error in token', err);
                 } else {
